@@ -1,0 +1,65 @@
+server:
+  port: 8081  # Port de l'API Gateway
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+              - "http://angular-frontend:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: reclamations-service
+          uri: lb://RECLAMATIONS-SERVICE
+          predicates:
+            - Path=/api/commandes/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - RequestSize=10MB
+            - CircuitBreaker=name=reclamationsCB, fallbackUri=forward:/fallback/reclamations
+
+        - id: commandes-service
+          uri: lb://commandes-service
+          predicates:
+            - Path=/api/commandes/**
+          filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            - RequestSize=10MB
+            - CircuitBreaker=name=commandesCB, fallbackUri=forward:/fallback/commandes
+
+  httpclient:
+    connect-timeout: 5000  # 5 secondes pour se connecter
+    response-timeout: 10s  # 10 secondes pour recevoir la réponse
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG  # ✅ Active les logs détaillés
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true  # Utilise l'adresse IP au lieu du hostname
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  # ✅ Active tous les endpoints Actuator

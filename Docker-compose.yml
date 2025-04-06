@@ -1,0 +1,76 @@
+version: '3.8'
+services:
+  eureka:
+    build:
+      context: ./Eureka-Server
+    image: eureka-server
+    container_name: eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - mynetwork
+
+  api-gateway:
+    build:
+      context: ./API_Gateway
+    image: api-gateway
+    container_name: api-gateway
+    ports:
+      - "8081:8081"
+    depends_on:
+      - eureka
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+    networks:
+      - mynetwork
+
+  angular-frontend:
+    image: angular-frontend
+    container_name: angular-frontend
+    build: ./Front-End
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api-gateway
+    networks:
+      - mynetwork
+    environment:
+      - API_BASE_URL=http://api-gateway:8081
+      - CHOKIDAR_USEPOLLING=true # For file watching under Docker
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mynetwork
+
+  reclamation-service:
+    build:
+      context: ./Reclamation_Service
+    image: reclamation-service
+    container_name: reclamation-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      mongo:
+        condition: service_started
+      eureka:
+        condition: service_started
+    environment:
+      # MongoDB configuration
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/restaurantDB
+      # Eureka configuration
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka/
+    networks:
+      - mynetwork
+
+volumes:
+  mongo_data:
+
+networks:
+  mynetwork:
+    driver: bridge

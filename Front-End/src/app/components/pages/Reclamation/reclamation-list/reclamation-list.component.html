@@ -1,0 +1,83 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="text-primary"><i class="fas fa-clipboard-list"></i> Mes Réclamations</h3>
+    <div>
+      <button class="btn btn-info me-2" routerLink="stats">
+        <i class="fas fa-chart-bar"></i> Statistiques
+      </button>
+      <button class="btn btn-primary" (click)="addReclamation()">
+        <i class="fas fa-plus"></i> Nouvelle réclamation
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4" *ngFor="let reclamation of reclamations">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <h5 class="card-title text-truncate mb-3">{{ reclamation.description }}</h5>
+            <span [class]="getStatusBadgeClass(reclamation.status)">
+              {{ getStatusLabel(reclamation.status) }}
+            </span>
+          </div>
+          <p class="card-text">
+            <small class="text-muted">
+              <i class="far fa-calendar-alt"></i> 
+              {{ formatDate(reclamation.dateCreation) }}
+            </small>
+          </p>
+        </div>
+        <div class="card-footer bg-transparent">
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-outline-primary btn-sm" (click)="viewReclamation(reclamation, reclamationModal)">
+              <i class="fas fa-eye"></i> Détails
+            </button>
+            <div class="btn-group">
+              <button class="btn btn-outline-warning btn-sm" (click)="updateStatus(reclamation.id, 'EN_COURS')">
+                <i class="fas fa-clock"></i> En cours
+              </button>
+              <button class="btn btn-outline-success btn-sm" (click)="updateStatus(reclamation.id, 'RESOLU')">
+                <i class="fas fa-check"></i> Résolu
+              </button>
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteReclamation(reclamation.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #reclamationModal let-modal>
+  <div class="modal-header bg-light">
+    <h4 class="modal-title"><i class="fas fa-info-circle"></i> Détails de la Réclamation</h4>
+    <button class="btn-close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="p-3">
+      <div class="mb-3">
+        <label class="text-muted">Description</label>
+        <p class="lead">{{ modalContent?.description }}</p>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label class="text-muted">Statut</label>
+          <p><span [class]="getStatusBadgeClass(modalContent?.status)">
+            {{ getStatusLabel(modalContent?.status) }}
+          </span></p>
+        </div>
+        <div class="col-md-6">
+          <label class="text-muted">Créée le</label>
+          <p>{{ formatDate(modalContent?.dateCreation) }}</p>
+        </div>
+      </div>
+      <div *ngIf="modalContent?.dateResolution" class="mt-3">
+        <label class="text-muted">Résolue le</label>
+        <p>{{ formatDate(modalContent?.dateResolution) }}</p>
+      </div>
+    </div>
+  </div>
+</ng-template>
