@@ -62,4 +62,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"  # ✅ Active tous les endpoints Actuator
+        include: "*"  # ✅ Active tous les endpoints Actuatore

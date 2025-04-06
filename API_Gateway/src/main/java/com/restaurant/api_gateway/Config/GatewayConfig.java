@@ -29,7 +29,7 @@ public class GatewayConfig {
                 "http://api-gateway:8081",
                 "http://localhost:8081",
                 "http://docker.host.internal:8081",
-                
+
                 "http://docker.host.internal:4200"
         ));
 

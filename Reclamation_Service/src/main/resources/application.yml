@@ -4,7 +4,6 @@ spring:
 
   data:
     mongodb:
-      # Use localhost if MongoDB is running on your local machine.
       uri: mongodb://localhost:27017/restaurantDB
 
   cache:
@@ -25,9 +24,11 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
-    # The instance id can be generated using the app name and port.
     instance-id: ${spring.application.name}:${server.port}
     hostname: localhost
+
+stripe:
+  apiKey: sk_test_51OooujHlBP4i2gKTlAvEzrOf78uJjXHKB12LTbjTQup1KeJtZqBUIqIT7QKfxLWKzSEFt6U7ryWbFpsCg7DkceXs00v9eezVoN
 
 logging:
   level:
