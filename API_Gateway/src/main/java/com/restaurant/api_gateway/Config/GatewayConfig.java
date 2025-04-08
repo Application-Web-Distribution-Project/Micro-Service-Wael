@@ -17,6 +17,9 @@ public class GatewayConfig {
         return builder.routes()
                 .route("reclamations-service", r -> r.path("/api/commandes/**")
                         .uri("lb://reclamations-service"))
+                .route("reclamations-service", r -> r.path("/api/payments/**")
+                        .uri("lb://reclamations-service")) // Assuming payments are handled by the same service
+
                 .build();
     }
     @Bean
