@@ -35,7 +35,7 @@ Voici les principaux modules du projet :
 
 - **Eureka-Server** : Serveur Eureka pour la découverte des services. 🔍
 - **API_Gateway** : Passerelle API pour la gestion des requêtes. 🚪
-- **Reclamation_Service** : Microservice pour la gestion des réclamations. 📝
+- **Reclamation_Service** : Microservice pour la gestion des commandes. 📝
 - **Angular-Frontend** : Interface utilisateur développée avec Angular. 💻
 
 ---
